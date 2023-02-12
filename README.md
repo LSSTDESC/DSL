@@ -1,2 +1,2 @@
 # Bayestar
-Automatically Differentiable Survey Simulation Library.
+Automatically Differentiable Probabilistic Survey Simulation Library.
