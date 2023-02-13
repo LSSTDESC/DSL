@@ -1,4 +1,4 @@
-# Bayestar
+# DSL: Differentiable Survey Library
 Automatically Differentiable Probabilistic Survey Simulation Library.
 
 ## Broad Description and Initial Ideas for Scope
