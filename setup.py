@@ -1,10 +1,10 @@
 from setuptools import find_packages
 from setuptools import setup
 
-setup(name='bayestar',
+setup(name='dsl',
       version='0.1',
       description='Automatically Differentiable Bayesian Survey Simulation',
-      url='https://github.com/LSSTDESC/Bayestar',
+      url='https://github.com/LSSTDESC/DSL',
       author='LSST DESC',
       license='MIT',
       packages=find_packages(),
