@@ -1,43 +1,57 @@
 from dataclasses import dataclass
 
+import numpy as np
+import healpy as hp
+from scipy.interpolate import interp1d
+
 
 @dataclass
 class SurveyProperties:
-    mask_filename: str
-    luminosity_function: float
-    cut_m_bright: float
-    cut_m_faint: float
-    cut_M_bright: float
-    cut_M_faint: float 
-    resolution: int # same resolution for all z bins? sth to think about. 
+    mask: healpix_map
+    distance_grid: float
+    selection: float # selection values on distance_grid
+    NSIDE: int # same resolution for all z bins? sth to think about. 
+    N_mean: float # mean galaxy density
+    galaxy_counts: int
     
-    def mask_at_voxel(self) -> int:
+    def angular_mask(self, x, y, z) -> healpix_map:
         """
-        Given a fits map return its value at (x,y,z) or (ra,dec)
+        Given a fits map return its value at (x,y,z)
         Some operation on self.mask_filename
         Healpix map of the survey at a given resolution given NSIDE
         """
-        return
+        print("Approximate resolution at NSIDE {} is {:.2} deg".format(
+        self.NSIDE, hp.nside2resol(self.NSIDE, arcmin=True) / 60))
+        ipix = hp.vec2pix(x, y, z)
+        return mask[ipix]
         
-    def selection_at_voxel(self) -> float:
+
+    def radial_selection(self, r) -> float:
         """
-        Given a luminosity function return its value at (x,y,z)
+        Given a selection, return its value at comoving distance r
         Some operation on self.luminosity_function
         and potentially self.cut ...
         """
-        return
+        selection_interp = interp1d(self.distance_grid, self.selection, fill_value="extrapolate")
+        return selection_interp(r)
     
-    def survey_response(self) -> float:
+
+    def survey_response(self, x, y, z) -> healpix_map:
         """
         Product of selection and mask we will use in the bias
         """
-        
-        return 
+        r = np.sqrt(x**2 + y**2 + z**2)
+        M = angular_mask(x, y, z)
+        S = radial_selection(r)
+        response = M * S
+        return M * S
     
-    def shot_noise(self) -> float:
+
+    def shot_noise(self) -> healpix_map:
         """
         Survey noise for a given number of galaxies per pixel
+        In what form do we need that? 1/N 
         """
-        return
+        return 1 / galaxy_counts
 
         
