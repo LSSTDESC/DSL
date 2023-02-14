@@ -29,8 +29,9 @@ class SurveyProperties:
     def radial_selection(self, r) -> float:
         """
         Given a selection, return its value at comoving distance r
-        Some operation on self.luminosity_function
-        and potentially self.cut ...
+        Assumes the radial selection will be given in a file
+        in which one column will be the distance_grid and one column
+        will be the radial selection.
         """
         selection_interp = interp1d(self.distance_grid, self.selection, fill_value="extrapolate")
         return selection_interp(r)
@@ -38,19 +39,17 @@ class SurveyProperties:
 
     def survey_response(self, x, y, z) -> healpix_map:
         """
-        Product of selection and mask we will use in the bias
+        Product of selection and mask we will use for the bias. 
         """
         r = np.sqrt(x**2 + y**2 + z**2)
         M = angular_mask(x, y, z)
         S = radial_selection(r)
-        response = M * S
         return M * S
     
 
     def shot_noise(self) -> healpix_map:
         """
-        Survey noise for a given number of galaxies per pixel
-        In what form do we need that? 1/N 
+        Survey noise for a given number of galaxies per pixel.
         """
         return 1 / galaxy_counts
 
